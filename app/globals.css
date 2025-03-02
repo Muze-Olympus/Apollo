@@ -39,7 +39,7 @@ body {
   
   /* Layering: Gradient + Image */
   background-image:  /* Gradient */
-    url('/assets/images/g1.png'); /* Background Image */
+    url('/assets/images/gradient1.png'); /* Background Image */
   
   background-repeat: no-repeat;
   background-position: bottom right; /* Adjust position */

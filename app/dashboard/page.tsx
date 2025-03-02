@@ -1,6 +1,7 @@
+"use client"; 
 import "../globals.css";
-import TopNavbar from "../components/topnavbar";
 import { Icon } from "@iconify/react";
+import TopUserBar from "../components/topuserbar";
 
 export default function HomePage() {
   return (
@@ -9,19 +10,8 @@ export default function HomePage() {
       <div className="noise-bg "></div>
       <div className="bg-container"></div>
       {/* Navbar */}
-      <div className="flex justify-between items-center px-6 py-2 relative">
-        {/* Left: Muze Text */}
-        <span className="text-white text-xl font-regular font-inter">
-          MUZE
-        </span>
-
-        {/* Center: Navbar */}
-        <TopNavbar />
-
-        {/* Right: Circle */}
-        <div className="w-8 h-8 bg-white rounded-full"></div>
-      </div>
-
+    <TopUserBar/>
+    
             {/* Title Section */}
             <div className="text-left mt-6 ml-12">
         <h1 className="text-3xl ">
