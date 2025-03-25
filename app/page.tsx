@@ -1,8 +1,32 @@
+"use client";
+
 import "./globals.css";
 import Image from "next/image";
-import Link from "next/link";
+import {UserAuth} from "./context/AuthContext";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function Home() {
+  //firebase
+  const {  user, signInWithGoogle} = UserAuth();
+  const router = useRouter();
+  const [userSession, setUserSession] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setUserSession(sessionStorage.getItem("user"));
+    }
+  }, []);
+  
+  const handleSignIn = async () => {
+   await signInWithGoogle();
+  };
+
+  useEffect(() => {
+    if (user||userSession) {
+      router.replace("/dashboard");
+    }
+  }, [user, router]);
 
   return (
     <div className="min-h-screen flex flex-col justify-between bg-[#252424]">
@@ -10,8 +34,8 @@ export default function Home() {
       <div className="flex justify-between items-center py-4 px-12">
       <Image src="/assets/logo.png" alt="Logo" width={70} height={70} />
         <div className="flex space-x-8">
-        <Link href="/signin" className="text-white">Login</Link>
-          <div className="flex items-center space-x-2"> <span className="italic text-white text-xs font-light ">Don’t have an account?</span>   {<Link href="/signin" className="text-white">SignUp</Link>}
+        <button onClick={handleSignIn} className="text-white">Login</button >
+          <div className="flex items-center space-x-2"> <span className="italic text-white text-xs font-light ">Don’t have an account?</span>   {<button  onClick={handleSignIn} className="text-white">SignUp</button >}
           </div>
         </div>
       </div>

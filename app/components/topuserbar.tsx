@@ -4,26 +4,30 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import TopNavbar from "./animatedBar";
 import { useRouter } from "next/navigation";
-import { createClient } from "../supabase/client";
-import { User } from "@supabase/supabase-js";
+import {UserAuth} from "../context/AuthContext";
 
 export default function TopUserBar() {
   const [showLogout, setShowLogout] = useState(false);
-  const [user, setUser] = useState<User | null>(null);
   const router = useRouter();
-  const supabase = createClient();
 
+  //firebase
+  const {  user,signOutGoogle } = UserAuth();
+    const userSession =sessionStorage.getItem("user");
+    const [isClient, setIsClient] = useState(false);
+    
+  // ✅ Ensure it's client-side before using sessionStorage
   useEffect(() => {
-    const fetchUser = async () => {
-      const { data } = await supabase.auth.getUser();
-      setUser(data?.user || null);
-    };
+    setIsClient(true);
 
-    fetchUser();
-  }, []);
+    const userSession = sessionStorage.getItem("user");
 
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
+    if (!user || !userSession) {
+      router.replace("/");
+    }
+  }, [user, router]);
+
+  const handleSignOut = async () => {
+     await signOutGoogle();
     router.push("/");
     router.refresh();
   };
@@ -50,19 +54,19 @@ export default function TopUserBar() {
           onMouseEnter={() => setShowLogout(true)}
           onMouseLeave={() => setShowLogout(false)}
         >
-          {user?.user_metadata?.avatar_url ? (
+          {user?.photoURL ? (
             <Image
-              src={user.user_metadata.avatar_url}
+              src={user.photoURL}
               alt="User Profile"
               width={32}
               height={32}
               className="w-8 h-8 rounded-full object-cover cursor-pointer"
-              onClick={handleLogout}
+              onClick={handleSignOut}
             />
           ) : (
             <div
               className="w-8 h-8 bg-gray-400 rounded-full cursor-pointer"
-              onClick={handleLogout}
+              onClick={handleSignOut}
             ></div>
           )}
 
