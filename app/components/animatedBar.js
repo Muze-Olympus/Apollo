@@ -1,8 +1,9 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import clsx from "clsx";
 import { Icon } from "@iconify/react";
+import { useRouter } from "next/navigation";
 
 const cn = clsx;
 
@@ -10,19 +11,37 @@ const tabs = [
   {
     name: "Muze AI",
     icon: <Icon icon="mingcute:ai-line" width="24" height="24" />,
+    path: "/dashboard",  // Home path
   },
   {
     name: "Muzz Matrix",
     icon: <Icon icon="material-symbols:graph-3" width="24" height="24" />,
+    path: "/matrix",  // Matrix path
   },
   {
     name: "Nemos",
     icon: <Icon icon="hugeicons:canvas" width="24" height="24" />,
+    path: "/nemos",  // Nemos path
   },
 ];
 
 export default function TopNavbar() {
+  const router = useRouter();
   const [selectedTab, setSelectedTab] = useState(0);
+  
+  // Set the initial tab based on the current path
+  useEffect(() => {
+    const path = window.location.pathname;
+    const tabIndex = tabs.findIndex(tab => path.includes(tab.path));
+    if (tabIndex !== -1) {
+      setSelectedTab(tabIndex);
+    }
+  }, []);
+
+  const handleTabClick = (index) => {
+    setSelectedTab(index);
+    router.push(tabs[index].path);
+  };
 
   return (
     <div className="flex justify-center p-4">
@@ -34,7 +53,7 @@ export default function TopNavbar() {
               "relative px-6 py-3 flex items-center space-x-2 text-white text-sm font-regular transition-all font-inter",
               selectedTab === index ? "opacity-100" : "opacity-50"
             )}
-            onClick={() => setSelectedTab(index)}
+            onClick={() => handleTabClick(index)}
           >
             <span className="text-lg">{tab.icon}</span>
             <span>{tab.name}</span>

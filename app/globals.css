@@ -46,5 +46,17 @@ body {
   background-size: 500px 500px; /* Control size */
 }
 
-
+.matrix-grid {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  
+  /* Layering: Gradient + Image */
+  background-image:  /* Gradient */
+    url('/assets/images/matrix_grid.svg'); /* Background Image */
+  
+  background-repeat: no-repeat;
+  background-position: center; /* Adjust position */
+  background-size: 500px 500px; 
+}
 

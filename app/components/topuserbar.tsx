@@ -45,7 +45,7 @@ export default function TopUserBar() {
       {/* Right: Session Info & Profile */}
       <div className="flex space-x-4 items-center relative">
         {user && (
-          <span className="text-white font-light">Welcome, {user?.email}</span>
+          <span className="text-white font-light">Welcome, {user?.displayName}</span>
         )}
 
         {/* Profile Image with Logout Button */}
