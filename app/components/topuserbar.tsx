@@ -17,8 +17,8 @@ export default function TopUserBar() {
     if (user === null) {
       router.replace("/");
     }
-    // Don't include router in the dependency array to prevent loops
-  }, [user]);
+
+  }, [user, router]);
 
   const handleSignOut = async () => {
     await signOutGoogle();

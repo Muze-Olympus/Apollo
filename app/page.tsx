@@ -29,7 +29,7 @@ export default function Home() {
         <div className="flex space-x-8">
           <button onClick={handleSignIn} className="text-white">Login</button>
           <div className="flex items-center space-x-2"> 
-            <span className="italic text-white text-xs font-light">Don't have an account?</span>
+          <span className="italic text-white text-xs font-light">Don&#39;t have an account?</span>
             <button onClick={handleSignIn} className="text-white">SignUp</button>
           </div>
         </div>
