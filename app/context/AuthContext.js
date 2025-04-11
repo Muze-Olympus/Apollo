@@ -35,6 +35,7 @@ export const AuthContextProvider = ({ children }) => {
       sessionStorage.setItem("user", true); // Set user to true in session storage
       setLoading(false);
     } catch (error) {
+      console.error(error);
       setLoading(false);
     }
   };

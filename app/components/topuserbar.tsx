@@ -12,12 +12,12 @@ export default function TopUserBar() {
 
   //firebase
   const {  user,signOutGoogle } = UserAuth();
-    const userSession =sessionStorage.getItem("user");
-    const [isClient, setIsClient] = useState(false);
+    // const userSession =sessionStorage.getItem("user");
+    // const [isClient,setIsClient] = useState(false);
     
   // ✅ Ensure it's client-side before using sessionStorage
   useEffect(() => {
-    setIsClient(true);
+    // setIsClient(true);
 
     const userSession = sessionStorage.getItem("user");
 

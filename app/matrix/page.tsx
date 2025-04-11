@@ -2,10 +2,19 @@
 
 import { useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
-import axios from "axios";
 import TopUserBar from "../components/topuserbar";
+import Image from "next/image";
 
-const previewCache = new Map<string, any>();
+
+interface PreviewData {
+  title: string;
+  description: string;
+  image: string;
+  url: string;
+}
+
+const previewCache = new Map<string, PreviewData>();
+
 
 const fetchPreview = async (url: string) => {
   try {
@@ -21,7 +30,7 @@ const fetchPreview = async (url: string) => {
     const res = await fetch(`http://localhost:3000/api/preview?url=${encodeURIComponent(url)}`);
     const json = await res.json();
 
-    let data = json?.data;
+    const data = json?.data;
     let title = data?.title || "";
     let description = data?.description || "";
     let image = data?.images?.[0];
@@ -231,7 +240,16 @@ function VisNetworkGraph() {
       transform: "translate(-50%, -100%)", 
     }}
   >
-    <img src={hoveredNode.image} alt={hoveredNode.title} className="w-full h-32 object-cover rounded-md" />
+    <Image
+  src={hoveredNode.image}
+  alt={hoveredNode.title}
+  width={256} // You can adjust these based on your layout
+  height={128}
+  className="w-full h-32 object-cover rounded-md"
+  unoptimized // optional: skip optimization if image is from an external source
+/>
+
+    {/* <img src={hoveredNode.image} alt={hoveredNode.title} className="w-full h-32 object-cover rounded-md" /> */}
     <div className="mt-1">
       <h3 className="font-bold text-sm">{hoveredNode.title}</h3>
       <p className="text-xs text-gray-400">{hoveredNode.description}</p>

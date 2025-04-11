@@ -26,7 +26,7 @@ export default function Home() {
     if (user||userSession) {
       router.replace("/dashboard");
     }
-  }, [user, router]);
+  }, [user, userSession,router]);
 
   return (
     <div className="min-h-screen flex flex-col justify-between bg-[#252424]">
