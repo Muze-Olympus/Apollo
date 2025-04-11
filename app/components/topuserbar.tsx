@@ -4,32 +4,25 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import TopNavbar from "./animatedBar";
 import { useRouter } from "next/navigation";
-import {UserAuth} from "../context/AuthContext";
+import { UserAuth } from "../context/AuthContext";
 
 export default function TopUserBar() {
   const [showLogout, setShowLogout] = useState(false);
   const router = useRouter();
+  const { user, signOutGoogle } = UserAuth();
 
-  //firebase
-  const {  user,signOutGoogle } = UserAuth();
-    // const userSession =sessionStorage.getItem("user");
-    // const [isClient,setIsClient] = useState(false);
-    
-  // ✅ Ensure it's client-side before using sessionStorage
+  // Protected route check - only checks Firebase auth state
   useEffect(() => {
-    // setIsClient(true);
-
-    const userSession = sessionStorage.getItem("user");
-
-    if (!user || !userSession) {
+    // Only redirect if there's definitely no authenticated user
+    if (user === null) {
       router.replace("/");
     }
-  }, [user, router]);
+    // Don't include router in the dependency array to prevent loops
+  }, [user]);
 
   const handleSignOut = async () => {
-     await signOutGoogle();
+    await signOutGoogle();
     router.push("/");
-    router.refresh();
   };
 
   return (

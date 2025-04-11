@@ -15,8 +15,8 @@ export const AuthContextProvider = ({ children }) => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUser(user);
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
       setLoading(false);
       // Use sessionStorage on the client-side only
       if (typeof window !== "undefined" && user) {
@@ -26,7 +26,7 @@ export const AuthContextProvider = ({ children }) => {
       }
     });
     return () => unsubscribe();
-  }, [user]);
+  }, []);
 
   const signInWithGoogle = async () => {
     setLoading(true);
