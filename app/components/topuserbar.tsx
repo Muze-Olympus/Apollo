@@ -18,7 +18,7 @@ export default function TopUserBar() {
       router.replace("/");
     }
 
-  }, [user, router]);
+  }, [user]);
 
   const handleSignOut = async () => {
     await signOutGoogle();

@@ -18,16 +18,13 @@ export const AuthContextProvider = ({ children }) => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
       setLoading(false);
-
-      if (typeof window !== "undefined") {
-        if (currentUser) {
-          sessionStorage.setItem("user", "true");
-        } else {
-          sessionStorage.removeItem("user");
-        }
+      // Use sessionStorage on the client-side only
+      if (typeof window !== "undefined" && user) {
+        sessionStorage.setItem("user", true); // Set user in session storage
+      } else if (typeof window !== "undefined" && !user) {
+        sessionStorage.removeItem("user"); // Remove user from session storage if logged out
       }
     });
-
     return () => unsubscribe();
   }, []);
 
