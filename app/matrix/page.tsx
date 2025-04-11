@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import TopUserBar from "../components/topuserbar";
 import Image from "next/image";
-
+import type { Network } from "vis-network";
 
 interface PreviewData {
   title: string;
@@ -14,7 +14,6 @@ interface PreviewData {
 }
 
 const previewCache = new Map<string, PreviewData>();
-
 
 const fetchPreview = async (url: string) => {
   try {
@@ -68,8 +67,6 @@ const fetchPreview = async (url: string) => {
   }
 };
 
-
-
 // Sample dataset for the graph
 const sampleData = {
   nodes: [
@@ -96,7 +93,6 @@ const sampleData = {
       label: "Background Upload",
       image: "https://findingtom.com/images/uploads/medium-logo/article-image-00.jpeg",
       shape: "circularImage",
-      // title: "Background Upload Example",
       url: "https://medium.com/flutter",
     },
     {
@@ -104,7 +100,6 @@ const sampleData = {
       label: "Clean diet guide",
       image: "https://img.freepik.com/free-vector/new-2023-twitter-logo-x-icon-design_1017-45418.jpg",
       shape: "circularImage",
-      // title: "Clean Diet Guide",
       url: "https://x.com/CoachPauI/status/1702470989991313627",
     },
     {
@@ -112,7 +107,6 @@ const sampleData = {
       label: "Getting Lean",
       image: "https://goodly.co.in/wp-content/uploads/2023/10/youtube-logo-png-46016-1.png",
       shape: "circularImage",
-      // title: "How I Made Getting Lean Easy",
       url: "https://www.youtube.com/watch?v=9Mfh_UYdo9k",
     },
   ],
@@ -135,7 +129,7 @@ const sampleData = {
 // Graph component
 function VisNetworkGraph() {
   const graphRef = useRef<HTMLDivElement | null>(null);
-  const networkRef = useRef<any>(null);
+  const networkRef = useRef<Network | null>(null);
   const [hoveredNode, setHoveredNode] = useState<{
     title: string;
     image: string;
@@ -174,19 +168,21 @@ function VisNetworkGraph() {
             const preview = await fetchPreview(node.url);
             console.log(preview);
   
-            const position = networkRef.current.getPositions([params.node])[params.node];
-            const canvasPosition = networkRef.current.canvasToDOM(position);
+            const position = networkRef.current?.getPositions([params.node])[params.node];
+            if (position && networkRef.current) {
+              const canvasPosition = networkRef.current.canvasToDOM(position);
   
-            setHoveredNode(
-              preview
-                ? {
-                    ...preview,
-                    url: node.url,
-                    x: canvasPosition.x + 20,
-                    y: canvasPosition.y - 40,
-                  }
-                : null
-            );
+              setHoveredNode(
+                preview
+                  ? {
+                      ...preview,
+                      url: node.url,
+                      x: canvasPosition.x + 20,
+                      y: canvasPosition.y - 40,
+                    }
+                  : null
+              );
+            }
           }
         });
   
@@ -206,18 +202,16 @@ function VisNetworkGraph() {
         });
 
         networkRef.current.once("stabilizationIterationsDone", () => {
-          networkRef.current.setOptions({
+          networkRef.current?.setOptions({
             physics: false,
           });
         });
-        
       }
     };
   
     initializeNetwork();
   }, []);
   
-
   const resetCenterNode = () => {
     if (networkRef.current) {
       networkRef.current.moveTo({ position: { x: 0, y: 0 }, scale: 1 });
@@ -229,35 +223,30 @@ function VisNetworkGraph() {
       {/* Graph Container */}
       <div ref={graphRef} className="w-full h-full"></div>
 
-     
-{/* Hovered Node Preview */}
-{hoveredNode && (
-  <div
-    className="absolute bg-gray-900 text-white p-2 rounded-lg shadow-lg w-64"
-    style={{
-      top: `${hoveredNode.y}px`,
-      left: `${hoveredNode.x}px`,
-      transform: "translate(-50%, -100%)", 
-    }}
-  >
-    <Image
-  src={hoveredNode.image}
-  alt={hoveredNode.title}
-  width={256} // You can adjust these based on your layout
-  height={128}
-  className="w-full h-32 object-cover rounded-md"
-  unoptimized // optional: skip optimization if image is from an external source
-/>
-
-    {/* <img src={hoveredNode.image} alt={hoveredNode.title} className="w-full h-32 object-cover rounded-md" /> */}
-    <div className="mt-1">
-      <h3 className="font-bold text-sm">{hoveredNode.title}</h3>
-      <p className="text-xs text-gray-400">{hoveredNode.description}</p>
-    </div>
-  </div>
-)}
-
-
+      {/* Hovered Node Preview */}
+      {hoveredNode && (
+        <div
+          className="absolute bg-gray-900 text-white p-2 rounded-lg shadow-lg w-64"
+          style={{
+            top: `${hoveredNode.y}px`,
+            left: `${hoveredNode.x}px`,
+            transform: "translate(-50%, -100%)", 
+          }}
+        >
+          <Image
+            src={hoveredNode.image}
+            alt={hoveredNode.title}
+            width={256}
+            height={128}
+            className="w-full h-32 object-cover rounded-md"
+            unoptimized
+          />
+          <div className="mt-1">
+            <h3 className="font-bold text-sm">{hoveredNode.title}</h3>
+            <p className="text-xs text-gray-400">{hoveredNode.description}</p>
+          </div>
+        </div>
+      )}
 
       {/* Reset Position Button */}
       <button
