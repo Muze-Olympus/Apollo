@@ -15,10 +15,13 @@ export default function RootLayout({
 }>) {
   // Add state to track client-side rendering
   const [isMounted, setIsMounted] = useState(false);
-  
+
   useEffect(() => {
     setIsMounted(true);
   }, []);
+  
+  if (!isMounted) return null; // This line avoids hydration mismatch
+  
 
   return (
     <html lang="en">
