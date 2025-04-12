@@ -25,8 +25,15 @@ const fetchPreview = async (url: string) => {
       return previewCache.get(url);
     }
 
+    // Determine base URL dynamically
+    const baseURL =
+      process.env.NODE_ENV === "development"
+        ? "http://localhost:3000"
+        : process.env.NEXT_PUBLIC_BASE_URL;
+
     // First try from local API
-    const res = await fetch(`http://localhost:3000/api/preview?url=${encodeURIComponent(url)}`);
+    const res = await fetch(`${baseURL}/api/preview?url=${encodeURIComponent(url)}`);
+
     const json = await res.json();
 
     const data = json?.data;
@@ -49,23 +56,13 @@ const fetchPreview = async (url: string) => {
       }
     }
 
-    const previewData = {
-      title: title || "We are on it",
-      description: description || "Preview unavailable",
-      image: image || "/assets/images/no_preview.webp",
-      url: resolvedUrl,
-    };
-
-    // Store in cache
-    previewCache.set(url, previewData);
-
-    return previewData;
-
-  } catch (error) {
-    console.error("Error fetching preview:", error);
+    return { title, description, image, url: resolvedUrl };
+  } catch (err) {
+    console.error("Error fetching preview:", err);
     return null;
   }
 };
+
 
 // Sample dataset for the graph
 const sampleData = {
