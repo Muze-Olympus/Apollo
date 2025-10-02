@@ -8,20 +8,21 @@ import { UserAuth } from "../context/AuthContext";
 
 export default function TopUserBar() {
   const [showLogout, setShowLogout] = useState(false);
+  const [userEmail, setUserEmail] = useState<string | null>(null);
   const router = useRouter();
-  const { user, signOutGoogle } = UserAuth();
+  const { user, signOut } = UserAuth();
 
-  // Protected route check - only checks Firebase auth state
+  // Protected route check
   useEffect(() => {
-    // Only redirect if there's definitely no authenticated user
-    if (user === null) {
+    if (!user) {
       router.replace("/");
+    } else {
+      setUserEmail(user.email);
     }
-
-  }, [user]);
+  }, [user, router]);
 
   const handleSignOut = async () => {
-    await signOutGoogle();
+    await signOut();
     router.push("/");
   };
 
@@ -38,7 +39,7 @@ export default function TopUserBar() {
       {/* Right: Session Info & Profile */}
       <div className="flex space-x-4 items-center relative">
         {user && (
-          <span className="text-white font-light">Welcome, {user?.displayName}</span>
+          <span className="text-white font-light">Welcome, {userEmail}</span>
         )}
 
         {/* Profile Image with Logout Button */}
@@ -47,21 +48,15 @@ export default function TopUserBar() {
           onMouseEnter={() => setShowLogout(true)}
           onMouseLeave={() => setShowLogout(false)}
         >
-          {user?.photoURL ? (
-            <Image
-              src={user.photoURL}
-              alt="User Profile"
-              width={32}
-              height={32}
-              className="w-8 h-8 rounded-full object-cover cursor-pointer"
-              onClick={handleSignOut}
-            />
-          ) : (
-            <div
-              className="w-8 h-8 bg-gray-400 rounded-full cursor-pointer"
-              onClick={handleSignOut}
-            ></div>
-          )}
+          {/* Default profile icon since we don't have photo URLs from backend */}
+          <div
+            className="w-8 h-8 bg-blue-500 rounded-full cursor-pointer flex items-center justify-center"
+            onClick={handleSignOut}
+          >
+            <span className="text-white text-sm font-bold">
+              {userEmail ? userEmail.charAt(0).toUpperCase() : "U"}
+            </span>
+          </div>
 
           {/* Logout Button (Appears on Hover) */}
           {showLogout && (

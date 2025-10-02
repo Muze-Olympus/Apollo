@@ -4,18 +4,31 @@ import "./globals.css";
 import Image from "next/image";
 import { UserAuth } from "./context/AuthContext";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import AuthModal from "./components/AuthModal";
 
 export default function Home() {
-  const { user, signInWithGoogle } = UserAuth();
+  const { user } = UserAuth();
   const router = useRouter();
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [authMode, setAuthMode] = useState<"login" | "signup">("login");
   
-  const handleSignIn = async () => {
-    await signInWithGoogle();
+  const handleLogin = () => {
+    setAuthMode("login");
+    setShowAuthModal(true);
+  };
+
+  const handleSignUp = () => {
+    setAuthMode("signup");
+    setShowAuthModal(true);
+  };
+
+  const toggleAuthMode = () => {
+    setAuthMode(authMode === "login" ? "signup" : "login");
   };
 
   useEffect(() => {
-    // Only check authentication state from Firebase
+    // Redirect to dashboard if user is authenticated
     if (user) {
       router.replace("/dashboard");
     }
@@ -27,10 +40,10 @@ export default function Home() {
       <div className="flex justify-between items-center py-4 px-12">
         <Image src="/assets/logo.png" alt="Logo" width={70} height={70} />
         <div className="flex space-x-8">
-          <button onClick={handleSignIn} className="text-white">Login</button>
+          <button onClick={handleLogin} className="text-white">Login</button>
           <div className="flex items-center space-x-2"> 
           <span className="italic text-white text-xs font-light">Don&#39;t have an account?</span>
-            <button onClick={handleSignIn} className="text-white">SignUp</button>
+            <button onClick={handleSignUp} className="text-white">SignUp</button>
           </div>
         </div>
       </div>
@@ -51,6 +64,14 @@ export default function Home() {
         <button className="text-white">Privacy Policy</button>
         <button className="text-white">Contact Us</button>
       </div>
+
+      {/* Auth Modal */}
+      <AuthModal
+        isOpen={showAuthModal}
+        onClose={() => setShowAuthModal(false)}
+        mode={authMode}
+        onToggleMode={toggleAuthMode}
+      />
     </div>
   );
 }
