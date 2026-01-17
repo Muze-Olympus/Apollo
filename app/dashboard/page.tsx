@@ -3,10 +3,12 @@ import "../globals.css";
 import { Icon } from "@iconify/react";
 import TopUserBar from "../components/topuserbar";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function HomePage() {
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
   const handleSearch = async () => {
     if (!input.trim()) return;
@@ -99,6 +101,13 @@ export default function HomePage() {
           <Icon icon="line-md:twitter" width="18" height="18" color="#0D99FF" />
           <span>add tweet</span>
         </div>
+        <div 
+          className="flex items-center gap-2 cursor-pointer hover:text-white transition-colors"
+          onClick={() => router.push('/graph')}
+        >
+          <Icon icon="material-symbols:network-node" width="18" height="18" color="#8B5CF6" />
+          <span>view graph</span>
+        </div>
         <div className="flex items-center gap-2 cursor-pointer hover:text-white">
           ⋮ <span>more</span>
         </div>
@@ -110,6 +119,43 @@ export default function HomePage() {
           Fetching results...
         </div>
       )}
+
+      {/* Graph Visualization Card */}
+      <div className="ml-12 mr-12 mt-8">
+        <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-lg p-6 border border-gray-700 hover:border-purple-500 transition-all duration-300 cursor-pointer"
+             onClick={() => router.push('/graph')}>
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-xl font-semibold text-white mb-2">Resource Graph Visualization</h3>
+              <p className="text-gray-300 text-sm mb-4">
+                Explore your resources and their relationships in an interactive network graph. 
+                Discover connections, dependencies, and optimize your resource organization.
+              </p>
+              <div className="flex items-center space-x-4 text-xs text-gray-400">
+                <span className="flex items-center">
+                  <Icon icon="material-symbols:network-node" className="mr-1" />
+                  15 Resources
+                </span>
+                <span className="flex items-center">
+                  <Icon icon="material-symbols:link" className="mr-1" />
+                  23 Connections
+                </span>
+                <span className="flex items-center">
+                  <Icon icon="material-symbols:category" className="mr-1" />
+                  8 Categories
+                </span>
+              </div>
+            </div>
+            <div className="flex items-center space-x-4">
+              <div className="text-right">
+                <div className="text-purple-400 text-2xl font-bold">Interactive</div>
+                <div className="text-gray-400 text-xs">Graph View</div>
+              </div>
+              <Icon icon="material-symbols:arrow-forward" width="24" height="24" className="text-purple-400" />
+            </div>
+          </div>
+        </div>
+      </div>
     </>
   );
 }
